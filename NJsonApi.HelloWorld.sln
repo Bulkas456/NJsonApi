@@ -1,19 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.HelloWorld", "NJsonApi.HelloWorld\NJsonApi.HelloWorld.csproj", "{6C015953-8FA9-4505-94D7-EE345FA60C79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NJsonApi", "NJsonApi\NJsonApi.csproj", "{39073AC4-47C1-4C0E-87E1-E48FA606D165}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi", "NJsonApi\NJsonApi.csproj", "{39073AC4-47C1-4C0E-87E1-E48FA606D165}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NJsonApi.Common", "NJsonApi.Common\NJsonApi.Common.csproj", "{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Common", "NJsonApi.Common\NJsonApi.Common.csproj", "{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NJsonApi.Common.Test", "NJsonApi.Common.Test\NJsonApi.Common.Test.csproj", "{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.HelloWorld.Common", "NJsonApi.HelloWorld.Common\NJsonApi.HelloWorld.Common.csproj", "{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Common.Test", "NJsonApi.Common.Test\NJsonApi.Common.Test.csproj", "{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NJsonApi.Test", "NJsonApi.Test\NJsonApi.Test.csproj", "{D893BD32-7E79-44DB-AC75-423102B69816}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NJsonApi.Test", "NJsonApi.Test\NJsonApi.Test.csproj", "{D893BD32-7E79-44DB-AC75-423102B69816}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6C015953-8FA9-4505-94D7-EE345FA60C79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C015953-8FA9-4505-94D7-EE345FA60C79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C015953-8FA9-4505-94D7-EE345FA60C79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C015953-8FA9-4505-94D7-EE345FA60C79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39073AC4-47C1-4C0E-87E1-E48FA606D165}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,10 +25,6 @@ Global
 		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59E4C7F0-DAA5-462C-BAB2-6BD36787D122}.Release|Any CPU.Build.0 = Release|Any CPU
-		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{244CA8C7-6AB9-459E-A531-DBF25EA30DE0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{346A3785-EB5B-43C0-9C0C-ADF5A22BC8E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {263FD6B8-9DD9-40BD-B65E-D8AF2A1E32CD}
 	EndGlobalSection
 EndGlobal
