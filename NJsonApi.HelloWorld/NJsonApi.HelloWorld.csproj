@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NJsonApi.Common\NJsonApi.Common.csproj" />
+    <ProjectReference Include="..\NJsonApi\NJsonApi.csproj" />
   </ItemGroup>
 
 </Project>

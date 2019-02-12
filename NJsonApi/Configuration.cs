@@ -48,7 +48,7 @@ namespace NJsonApi
             configuration.Formatters.Add(formatter);
         }*/
 
-        private static JsonSerializer GetJsonSerializer()
+        public JsonSerializer GetJsonSerializer()
         {
             var serializerSettings = new JsonSerializerSettings();
             serializerSettings.Converters.Add(new IsoDateTimeConverter());

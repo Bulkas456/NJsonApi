@@ -10,50 +10,56 @@ namespace NJsonApi.Serialization
 {
     public class JsonApiTransformer : IJsonApiTransformer
     {
-        private JsonSerializer serializer;
+        private readonly JsonSerializer serializer;
+        private readonly TransformationHelper transformationHelper;
 
-        public TransformationHelper TransformationHelper { get; set; }
-
-        public JsonSerializer Serializer
+        public JsonApiTransformer(
+            JsonSerializer serializer,
+            TransformationHelper transformationHelper)
         {
-            get { return serializer ?? (serializer = new JsonSerializer()); }
-            set { serializer = value; }
+            this.serializer = serializer;
+            this.transformationHelper = transformationHelper;
+        }
+
+        public CompoundDocument Transform(Exception error)
+        {
+            return this.transformationHelper.HandleException(error);
         }
 
         public CompoundDocument Transform(object objectGraph, Context context)
         {
-            Type innerObjectType = TransformationHelper.GetObjectType(objectGraph);
+            Type innerObjectType = this.transformationHelper.GetObjectType(objectGraph);
 
             /*if (objectGraph is HttpError)
             {
-                return TransformationHelper.HandleHttpError(objectGraph as HttpError);
+                return this.transformationHelper.HandleHttpError(objectGraph as HttpError);
             }
 
             if (objectGraph is Exception)
             {
-                return TransformationHelper.HandleException(objectGraph as Exception);
+                return this.transformationHelper.HandleException(objectGraph as Exception);
             }*/
 
-            TransformationHelper.VerifyTypeSupport(innerObjectType);
-            TransformationHelper.AssureAllMappingsRegistered(innerObjectType, context.Configuration);
+            this.transformationHelper.VerifyTypeSupport(innerObjectType);
+            this.transformationHelper.AssureAllMappingsRegistered(innerObjectType, context.Configuration);
 
             var result = new CompoundDocument
             {
-                Meta = TransformationHelper.GetMetadata(objectGraph)
+                Meta = this.transformationHelper.GetMetadata(objectGraph)
             };
 
-            var resource = TransformationHelper.UnwrapResourceObject(objectGraph);
+            var resource = this.transformationHelper.UnwrapResourceObject(objectGraph);
             var resourceMapping = context.Configuration.GetMapping(innerObjectType);
 
-            var resourceList = TransformationHelper.UnifyObjectsToList(resource);
-            var representationList = resourceList.Select(o => TransformationHelper.CreateResourceRepresentation(o, resourceMapping, context));
-            var primaryResource = TransformationHelper.ChooseProperResourceRepresentation(resource, representationList);
+            var resourceList = this.transformationHelper.UnifyObjectsToList(resource);
+            var representationList = resourceList.Select(o => this.transformationHelper.CreateResourceRepresentation(o, resourceMapping, context));
+            var primaryResource = this.transformationHelper.ChooseProperResourceRepresentation(resource, representationList);
 
             result.Data = primaryResource;
 
             if (resourceMapping.Relationships.Any())
             {
-                result.Included = TransformationHelper.CreateIncludedRepresentations(resourceList, resourceMapping, context);
+                result.Included = this.transformationHelper.CreateIncludedRepresentations(resourceList, resourceMapping, context);
             }
 
             return result;
@@ -98,7 +104,7 @@ namespace NJsonApi.Serialization
                 {
                     Type returnType = methodCallExpression.Arguments[0].Type;
 
-                    var resultValue = TransformationHelper.GetValue(value, returnType);
+                    var resultValue = this.transformationHelper.GetValue(value, returnType);
 
                     string key = propertySetter.Key.TrimStart('_');
                     delta.ObjectPropertyValues.Add(key, resultValue);
@@ -125,7 +131,7 @@ namespace NJsonApi.Serialization
                         var property = link.RelatedCollectionProperty;
                         if (property != null)
                         {
-                            var resultValue = TransformationHelper.GetCollection(value, link);
+                            var resultValue = this.transformationHelper.GetCollection(value, link);
 
                             string key = link.RelationshipName.TrimStart('_');
                             delta.ObjectPropertyValues.Add(key, resultValue);
@@ -133,7 +139,7 @@ namespace NJsonApi.Serialization
                     }
                     else
                     {
-                        delta.ObjectPropertyValues.Add(link.ParentResourceNavigationPropertyName, TransformationHelper.GetValue(value, link.ParentResourceNavigationPropertyType));
+                        delta.ObjectPropertyValues.Add(link.ParentResourceNavigationPropertyName, this.transformationHelper.GetValue(value, link.ParentResourceNavigationPropertyType));
                     }
                 }
             }
