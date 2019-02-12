@@ -148,10 +148,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
             return new Context
             {
-                Configuration = conf,
-                RoutePrefix = string.Empty
+                Configuration = conf
             };
-
         }
 
         class SampleClass

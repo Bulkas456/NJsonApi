@@ -3,17 +3,15 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Web.Http;
 using NJsonApi.Common.Infrastructure;
 using NJsonApi.Serialization.Documents;
 using NJsonApi.Serialization.Converters;
 
 namespace NJsonApi.Serialization
 {
-    public class JsonApiFormatter : BufferedMediaTypeFormatter
+    /*public class JsonApiFormatter : BufferedMediaTypeFormatter
     {
         public const string JSON_API_MIME_TYPE = "application/vnd.api+json";
         private readonly Configuration configuration;
@@ -94,7 +92,7 @@ namespace NJsonApi.Serialization
                 throw new JsonException("Json body should contain some content.");
             }
         }
-    }
+    }*/
 
     
 }

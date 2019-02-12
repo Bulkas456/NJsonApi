@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using FakeItEasy;
-using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NJsonApi.Serialization;
 using SoftwareApproach.TestingExtensions;
@@ -56,7 +55,6 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             var rel = (Relationship)resource.Relationships["nestedValues"];
             rel.Data.ShouldBeOfType(typeof(NullResourceIdentifier));
         }
-
 
         private SampleClass CreateObject()
         {
@@ -115,9 +113,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             return new Context
             {
                 Configuration = conf,
-                RoutePrefix = appUrl
+                RequestUri = new Uri("http://route")
             };
-
         }
 
         class SampleClass
@@ -134,6 +131,4 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             public string SomeNestedValue { get; set; }
         }
     }
-
-
 }

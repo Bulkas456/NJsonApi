@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web.Http;
 using NJsonApi.Common.Infrastructure;
 using NJsonApi.Exceptions;
 using NJsonApi.Serialization.Documents;
@@ -45,7 +44,7 @@ namespace NJsonApi.Serialization
             return compoundDocument;
         }
 
-        public CompoundDocument HandleHttpError(HttpError error)
+        /*public CompoundDocument HandleHttpError(HttpError error)
         {
             return new CompoundDocument
             {
@@ -57,7 +56,7 @@ namespace NJsonApi.Serialization
                     }}
                 }
             };
-        }
+        }*/
 
         public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
         {
@@ -162,11 +161,6 @@ namespace NJsonApi.Serialization
 
         public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context)
         {
-            var urlBuilder = new UrlBuilder
-            {
-                RoutePrefix = context.RoutePrefix
-            };
-
             var result = new SingleResource();
 
             result.Id = resourceMapping.IdGetter(objectGraph).ToString();
@@ -175,7 +169,7 @@ namespace NJsonApi.Serialization
             result.Attributes = resourceMapping.PropertyGetters.ToDictionary(kvp => kvp.Key, kvp => kvp.Value(objectGraph));
 
             if (resourceMapping.UrlTemplate != null)
-                result.Links = CreateLinks(resourceMapping, urlBuilder, result);
+                result.Links = CreateLinks(resourceMapping, context, result);
 
             if (resourceMapping.Relationships.Any())
                 result.Relationships = CreateRelationships(objectGraph, result.Id, resourceMapping, context);
@@ -183,20 +177,16 @@ namespace NJsonApi.Serialization
             return result;
         }
 
-        private static Dictionary<string, ILink> CreateLinks(IResourceMapping resourceMapping, UrlBuilder urlBuilder, SingleResource result)
+        private static Dictionary<string, ILink> CreateLinks(IResourceMapping resourceMapping, Context context, SingleResource result)
         {
-            return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = urlBuilder.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(IdPlaceholder, result.Id)) } } };
+            return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = context.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(IdPlaceholder, result.Id)) } } };
         }
 
-        private ILink GetUrlFromTemplate(string urlTemplate, string routePrefix, string parentId, string relatedId = null)
+        private ILink GetUrlFromTemplate(Context context, string urlTemplate, string parentId, string relatedId = null)
         {
-            var builder = new UrlBuilder
-            {
-                RoutePrefix = routePrefix
-            };
             return new SimpleLink
             {
-                Href = builder.GetFullyQualifiedUrl(urlTemplate.Replace(ParentIdPlaceholder, parentId).Replace(RelatedIdPlaceholder, relatedId))
+                Href = context.GetFullyQualifiedUrl(urlTemplate.Replace(ParentIdPlaceholder, parentId).Replace(RelatedIdPlaceholder, relatedId))
             };
         }
 
@@ -211,7 +201,7 @@ namespace NJsonApi.Serialization
 
                 // Generating "self" link
                 if (linkMapping.SelfUrlTemplate != null)
-                    relLinks.Self = GetUrlFromTemplate(linkMapping.SelfUrlTemplate, context.RoutePrefix, parentId);
+                    relLinks.Self = GetUrlFromTemplate(context, linkMapping.SelfUrlTemplate, parentId);
 
                 if (!linkMapping.IsCollection)
                 {
@@ -232,7 +222,7 @@ namespace NJsonApi.Serialization
 
                     // Generating "related" link for to-one relationships
                     if (linkMapping.RelatedUrlTemplate != null && relatedId != null)
-                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, context.RoutePrefix, parentId, relatedId.ToString());
+                        relLinks.Related = GetUrlFromTemplate(context, linkMapping.RelatedUrlTemplate, parentId, relatedId.ToString());
 
 
                     if (linkMapping.InclusionRule != ResourceInclusionRules.ForceOmit)
@@ -252,7 +242,7 @@ namespace NJsonApi.Serialization
                 {
                     // Generating "related" link for to-many relationships
                     if (linkMapping.RelatedUrlTemplate != null)
-                        relLinks.Related = GetUrlFromTemplate(linkMapping.RelatedUrlTemplate, context.RoutePrefix, parentId);
+                        relLinks.Related = GetUrlFromTemplate(context, linkMapping.RelatedUrlTemplate, parentId);
 
                     IEnumerable relatedInstance = null;
                     if (linkMapping.RelatedResource != null)

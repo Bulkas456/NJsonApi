@@ -170,8 +170,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
 
         private Context CreateContext()
         {
-            var conf = new Configuration();
-            var mapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
+            Configuration conf = new Configuration();
+            ResourceMapping<SampleClass> mapping = new ResourceMapping<SampleClass>(c => c.Id, "http://sampleClass/{id}");
             mapping.ResourceType = "sampleClasses";
             mapping.AddPropertyGetter("someValue", c => c.SomeValue);
             mapping.AddPropertyGetter("date", c => c.DateTime);
@@ -180,9 +180,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             return new Context
             {
                 Configuration = conf,
-                RoutePrefix = string.Empty
+                RequestUri = new Uri("http://route")
             };
-
         }
 
         class SampleClass

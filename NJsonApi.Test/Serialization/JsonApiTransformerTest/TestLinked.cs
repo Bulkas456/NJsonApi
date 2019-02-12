@@ -1,11 +1,11 @@
 ﻿using FakeItEasy;
-using FakeItEasy.ExtensionSyntax.Full;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using NJsonApi.Serialization;
 using NJsonApi.Serialization.Representations.Relationships;
 using NJsonApi.Serialization.Representations.Resources;
 using SoftwareApproach.TestingExtensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -143,9 +143,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             return new Context
             {
                 Configuration = conf,
-                RoutePrefix = appUrl
+                RequestUri = new Uri("http://route")
             };
-
         }
 
         private Context CreateOneToManyConfigurationContext()
@@ -176,9 +175,8 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             return new Context
             {
                 Configuration = conf,
-                RoutePrefix = appUrl
+                RequestUri = new Uri("http://route")
             };
-
         }
 
         class SampleClass

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NJsonApi.Serialization;
@@ -36,7 +35,7 @@ namespace NJsonApi
             return mapping;
         }
 
-        public void Apply(HttpConfiguration configuration)
+        /*public void Apply(HttpConfiguration configuration)
         {
             var serializer = GetJsonSerializer();
             var helper = new TransformationHelper();
@@ -47,7 +46,7 @@ namespace NJsonApi
 
             var formatter = new JsonApiFormatter(this, serializer);
             configuration.Formatters.Add(formatter);
-        }
+        }*/
 
         private static JsonSerializer GetJsonSerializer()
         {
