@@ -59,5 +59,10 @@ namespace NJsonApi
             var jsonSerializer = JsonSerializer.Create(serializerSettings);
             return jsonSerializer;
         }
+
+        public bool SupportContentType(string mimeType)
+        {
+            return string.Equals(mimeType, "application/vnd.api+json", StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

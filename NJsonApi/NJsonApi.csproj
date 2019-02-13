@@ -15,6 +15,10 @@
     <ProjectReference Include="..\NJsonApi.Common\NJsonApi.Common.csproj" />
   </ItemGroup>
   
+  <ItemGroup>
+    <Folder Include="Formatter\" />
+  </ItemGroup>
+  
   <!--<PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (call $(ProjectDir)makeNugetPackage.bat $(SolutionDir))</PostBuildEvent>
   </PropertyGroup>-->
