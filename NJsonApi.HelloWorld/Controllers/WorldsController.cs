@@ -32,9 +32,9 @@ namespace NJsonApi.HelloWorld.Controllers
         }
 
         [HttpPost]
-        public World Post([FromBody]Delta<World> worldDelta)
+        public World Post([FromBody]World worldDelta)
         {
-            var world = worldDelta.ToObject();
+            var world = worldDelta;//.ToObject();
             world.Id = StaticPersistentStore.Worlds.Max(w => w.Id) + 1;
             StaticPersistentStore.Worlds.Add(world);
             return world;

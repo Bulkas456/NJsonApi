@@ -27,7 +27,8 @@ namespace NJsonApi.HelloWorld
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseBufferedRequestBody()
+               .UseMvc();
         }
     }
 }

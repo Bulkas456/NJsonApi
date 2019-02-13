@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace NJsonApi.Filters
 {
-    public class JsonApiActionFilter : ActionFilterAttribute
+    /*public class JsonApiActionFilter : ActionFilterAttribute
     {
         private readonly IJsonApiTransformer jsonApiTransformer;
         private readonly Configuration configuration;
@@ -42,7 +42,7 @@ namespace NJsonApi.Filters
             if (updateDocument.Value != null)
             {
                 Type resultType = updateDocument.Value.Type.GetGenericArguments()[0];
-                Context jsonApiContext = context.HttpContext.ToContext();
+                Context jsonApiContext = context.HttpContext.ToContext(this.configuration);
                 jsonApiContext.Configuration = this.configuration;
                 var result = jsonApiTransformer.TransformBack(updateDocument.Value.UpdateDocument, resultType, jsonApiContext);
                 context.ActionArguments[updateDocument.Key] = result;
@@ -134,7 +134,7 @@ namespace NJsonApi.Filters
                         Content = $"The Content-Type provided was {context.HttpContext.Request.ContentType} but there was no NJsonApiCore configuration mapping for {controllerType.FullName}"
                     };
                 }
-            }*/
+            }
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
@@ -197,7 +197,7 @@ namespace NJsonApi.Filters
                     HttpContext = context.HttpContext
                 };
                 responseResult.Value = jsonApiTransformer.Transform(responseResult.Value, jsonApiContext);
-            }*/
+            }
         }
 
         /*private string[] FindRelationshipPathsToInclude(HttpRequest request)
@@ -210,6 +210,6 @@ namespace NJsonApi.Filters
         private bool ValidateAcceptHeader(IHeaderDictionary headers)
         {
             return configuration.ValidateAcceptHeader(headers["Accept"].FirstOrDefault());
-        }*/
-    }
+        }
+    }*/
 }

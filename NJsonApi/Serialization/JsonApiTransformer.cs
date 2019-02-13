@@ -28,22 +28,18 @@ namespace NJsonApi.Serialization
 
         public CompoundDocument Transform(object objectGraph, Context context)
         {
-            Type innerObjectType = this.transformationHelper.GetObjectType(objectGraph);
+            CompoundDocument result = objectGraph as CompoundDocument;
 
-            /*if (objectGraph is HttpError)
+            if (result != null)
             {
-                return this.transformationHelper.HandleHttpError(objectGraph as HttpError);
+                return result;
             }
 
-            if (objectGraph is Exception)
-            {
-                return this.transformationHelper.HandleException(objectGraph as Exception);
-            }*/
-
+            Type innerObjectType = this.transformationHelper.GetObjectType(objectGraph);
             this.transformationHelper.VerifyTypeSupport(innerObjectType);
             this.transformationHelper.AssureAllMappingsRegistered(innerObjectType, context.Configuration);
 
-            var result = new CompoundDocument
+            result = new CompoundDocument
             {
                 Meta = this.transformationHelper.GetMetadata(objectGraph)
             };

@@ -6,17 +6,13 @@
   
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" Version="2.5.16" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\NJsonApi.Common\NJsonApi.Common.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Formatter\" />
   </ItemGroup>
   
   <!--<PropertyGroup>

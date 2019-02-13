@@ -44,20 +44,6 @@ namespace NJsonApi.Serialization
             return compoundDocument;
         }
 
-        /*public CompoundDocument HandleHttpError(HttpError error)
-        {
-            return new CompoundDocument
-            {
-                Errors = new Dictionary<string, Error>
-                {
-                    { "Internal server error", new Error
-                    {
-                        Status = error.Message,
-                    }}
-                }
-            };
-        }*/
-
         public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
         {
             return resource is IEnumerable ?

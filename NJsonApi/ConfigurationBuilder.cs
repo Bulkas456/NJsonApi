@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using NJsonApi.Conventions;
 using NJsonApi.Conventions.Impl;
+using NJsonApi.Formatter.Input;
 
 namespace NJsonApi
 {
@@ -11,6 +13,8 @@ namespace NJsonApi
         public readonly Dictionary<Type, IResourceConfigurationBuilder> ResourceConfigurationsByType = new Dictionary<Type, IResourceConfigurationBuilder>();
 
         private readonly Stack<IConvention> conventions = new Stack<IConvention>();
+        private readonly Dictionary<Type, IJsonApiInputMapper> inputMappers = new Dictionary<Type, IJsonApiInputMapper>();
+        private readonly List<Func<PreSerializationContext, Task>> preSerializationActions = new List<Func<PreSerializationContext, Task>>();
         public ConfigurationBuilder()
         {
             //add the default conventions
@@ -23,6 +27,18 @@ namespace NJsonApi
         public ConfigurationBuilder WithConvention<T>(T convention) where T : class, IConvention
         {
             conventions.Push(convention);
+            return this;
+        }
+
+        public ConfigurationBuilder WithJsonApiInputFor<TResource>(IJsonApiInputMapper mapper)
+        {
+            this.inputMappers[typeof(TResource)] = mapper;
+            return this;
+        }
+
+        public ConfigurationBuilder WithPreSerializationAction(Func<PreSerializationContext, Task> action)
+        {
+            this.preSerializationActions.Add(action);
             return this;
         }
 
@@ -53,6 +69,8 @@ namespace NJsonApi
         public Configuration Build()
         {
             var configuration = new Configuration();
+            configuration.AddInputMapper(this.inputMappers);
+            configuration.AddPreSerializationAction(this.preSerializationActions);
             var propertyScanningConvention = GetConvention<IPropertyScanningConvention>();
 
             // Each link needs to be wired to full metadata once all resources are registered

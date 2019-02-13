@@ -8,6 +8,10 @@ using NJsonApi.Serialization;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
+using NJsonApi.Formatter;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace NJsonApi
 {
@@ -25,15 +29,26 @@ namespace NJsonApi
                 //mvcOptions.Filters.Add(typeof(JsonApiResourceFilter));
                 //mvcOptions.Filters.Add(typeof(JsonApiActionFilter));
                 mvcOptions.Filters.Add(typeof(JsonApiExceptionFilter));
-                //mvcOptions.OutputFormatters.Insert(0, new JsonApiOutputFormatter(nJsonApiConfig));
-                mvcOptions.InputFormatters.OfType<JsonInputFormatter>().First().SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/vnd.api+json"));
+                mvcOptions.OutputFormatters.Insert(0, new JsonApiOutputFormatter(configuration));
+                //mvcOptions.InputFormatters.OfType<JsonInputFormatter>().First().SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/vnd.api+json"));
+                // mvcOptions.InputFormatters.Insert(0, new JsonApiFormatter(configuration));
+
+                if (configuration.SupportInputConversionFromJsonApi)
+                {
+                    mvcOptions.InputFormatters.Insert(0, new JsonApiInputFormatter(configuration));
+                }
             });
 
-            mvcBuilder.Services.AddSingleton(configuration.GetJsonSerializer());
-            mvcBuilder.Services.AddSingleton<IJsonApiTransformer, JsonApiTransformer>();
+            mvcBuilder.Services.AddSingleton(configuration.Serializer);
+            mvcBuilder.Services.AddSingleton<IJsonApiTransformer>(configuration.JsonApiTransformer);
             mvcBuilder.Services.AddSingleton(configuration);
             mvcBuilder.Services.AddSingleton<TransformationHelper>();
             return mvcBuilder;
+        }
+
+        public static IApplicationBuilder UseBufferedRequestBody(this IApplicationBuilder applicationBuilder)
+        {
+            return applicationBuilder.Use(next => context => { context.Request.EnableRewind(); return next(context); });
         }
     }
 }
