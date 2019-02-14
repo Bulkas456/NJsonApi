@@ -56,5 +56,17 @@ namespace NJsonApi.Formatter
                 }
             }
         }
+
+        public override void WriteResponseHeaders(OutputFormatterWriteContext context)
+        {
+            base.WriteResponseHeaders(context);
+            IResourceMapping mapping = this.configuration.GetMapping(context.ObjectType);
+
+            if (mapping != null
+                && !string.IsNullOrEmpty(mapping.OutputContentType))
+            {
+                context.HttpContext.Response.ContentType = mapping.OutputContentType;
+            }
+        }
     }
 }

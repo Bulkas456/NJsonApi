@@ -17,7 +17,8 @@ namespace NJsonApi.HelloWorld
             configurationBuilder
                 .Resource<World>()
                 .WithAllProperties()
-                .WithLinkTemplate("/worlds/{id}");
+                .WithLinkTemplate("/worlds/{id}")
+                .WithOutputContentType("customContentType");
 
             configurationBuilder
                 .Resource<Continent>()

@@ -42,9 +42,6 @@ namespace NJsonApi.Formatter
         {
             CompoundDocument document = this.configuration.Serializer.RequestBodyTo<CompoundDocument>(context.HttpContext);
             object convertedObject = this.configuration.GetInputMapper(context.ModelType).Map(document);
-            //Type transformedObjectType = typeof(Delta<>).MakeGenericType(context.ModelType);
-            //IDelta transformedObject = this.configuration.JsonApiTransformer.TransformBack(updateDocument, transformedObjectType, context.HttpContext.ToContext(this.configuration));
-            //object convertedObject = transformedObject.ConvertToObject();
             return InputFormatterResult.SuccessAsync(convertedObject);
         }
     }

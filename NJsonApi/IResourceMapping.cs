@@ -6,6 +6,7 @@ namespace NJsonApi
 {
     public interface IResourceMapping
     {
+        string OutputContentType { get; set; }
         Func<object, object> IdGetter { get; set; }
         Action<object, string> IdSetter { get; set; }
         Type ResourceRepresentationType { get; set; }

@@ -77,6 +77,12 @@ namespace NJsonApi
             return this;
         }
 
+        public ResourceConfigurationBuilder<TResource> WithOutputContentType(string contentType)
+        {
+            ConstructedMetadata.OutputContentType = contentType;
+            return this;
+        }
+
         /// <summary>
         /// Registers through discovery all properties that are considered primitive, i.e. not linked resources.
         /// </summary>
