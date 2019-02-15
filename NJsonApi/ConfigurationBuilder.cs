@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NJsonApi.Conventions;
 using NJsonApi.Conventions.Impl;
 using NJsonApi.Formatter.Input;
@@ -15,6 +16,7 @@ namespace NJsonApi
         private readonly Stack<IConvention> conventions = new Stack<IConvention>();
         private readonly Dictionary<Type, IJsonApiInputMapper> inputMappers = new Dictionary<Type, IJsonApiInputMapper>();
         private readonly List<Func<PreSerializationContext, Task>> preSerializationActions = new List<Func<PreSerializationContext, Task>>();
+        private Func<JsonSerializer> jsonSerialzierFactory;
         public ConfigurationBuilder()
         {
             //add the default conventions
@@ -42,6 +44,12 @@ namespace NJsonApi
             return this;
         }
 
+        public ConfigurationBuilder WithJsonSerializerFactory(Func<JsonSerializer> factory)
+        {
+            this.jsonSerialzierFactory = factory;
+            return this;
+        }
+
         public T GetConvention<T>() where T : class, IConvention
         {
             var firstMatchingConvention = conventions
@@ -66,9 +74,12 @@ namespace NJsonApi
             }
         }
 
-        public Configuration Build()
+        public IConfiguration Build()
         {
-            var configuration = new Configuration();
+            Configuration configuration = new Configuration()
+            {
+                JsonSerializerFactory = this.jsonSerialzierFactory
+            };
             configuration.AddInputMapper(this.inputMappers);
             configuration.AddPreSerializationAction(this.preSerializationActions);
             var propertyScanningConvention = GetConvention<IPropertyScanningConvention>();
@@ -93,10 +104,14 @@ namespace NJsonApi
                                     link.RelatedBaseType.Name));
                         }
                         else
+                        {
                             links.RemoveAt(i);
+                        }
                     }
                     else
+                    {
                         link.ResourceMapping = resourceConfigurationOutput.ConstructedMetadata;
+                    }
                 }
 
                 configuration.AddMapping(resourceConfiguration.Value.ConstructedMetadata);

@@ -15,7 +15,7 @@ namespace NJsonApi
             });
         }
 
-        public Configuration Configuration { get; set; }
+        public IConfiguration Configuration { get; set; }
         public Uri RequestUri { get; set; }
         public Uri BaseUri => this.baseUri.Value;
     }

@@ -12,7 +12,7 @@ namespace NJsonApi
 {
     public static class Extensions
     {
-        public static Context ToContext(this HttpContext httpContext, Configuration configuration)
+        public static Context ToContext(this HttpContext httpContext, IConfiguration configuration)
         {
             return new Context()
             {

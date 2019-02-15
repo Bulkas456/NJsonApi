@@ -9,22 +9,28 @@ using System.Linq;
 using NJsonApi.Serialization.Converters;
 using System.Threading.Tasks;
 using NJsonApi.Formatter.Input;
+using Newtonsoft.Json.Serialization;
 
 namespace NJsonApi
 {
-    public class Configuration
+    public class Configuration : IConfiguration
     {
-        private readonly List<string> supportedContentTypes = new List<string>() { "application/vnd.api+json", "application/json" };
+        private readonly HashSet<string> supportedContentTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "application/vnd.api+json"
+        };
         private readonly Dictionary<string, IResourceMapping> resourcesMappingsByResourceType = new Dictionary<string, IResourceMapping>();
         private readonly Dictionary<Type, IResourceMapping> resourcesMappingsByType = new Dictionary<Type, IResourceMapping>();
         private readonly Lazy<JsonSerializer> serializer;
         private readonly IJsonApiTransformer jsonApiTransformer = new JsonApiTransformer();
         private readonly Dictionary<Type, IJsonApiInputMapper> inputMappers = new Dictionary<Type, IJsonApiInputMapper>();
-        private readonly List<Func<PreSerializationContext, Task>> preSerializationActions = new List<Func<PreSerializationContext, Task>>(); 
+        private readonly List<Func<PreSerializationContext, Task>> preSerializationActions = new List<Func<PreSerializationContext, Task>>();
+        private readonly Lazy<IReadOnlyList<string>> supportedContentTypesList;
 
         public Configuration()
         {
             this.serializer = new Lazy<JsonSerializer>(GetJsonSerializer);
+            this.supportedContentTypesList = new Lazy<IReadOnlyList<string>>(() => this.supportedContentTypes.ToList());
         }
 
         public void AddMapping(IResourceMapping resourceMapping)
@@ -38,6 +44,14 @@ namespace NJsonApi
             foreach (KeyValuePair<Type, IJsonApiInputMapper> pair in inputMappers)
             {
                 this.inputMappers[pair.Key] = pair.Value;
+
+                if (pair.Value.SupportedContentTypes != null)
+                {
+                    foreach (string contentType in pair.Value.SupportedContentTypes)
+                    {
+                        this.supportedContentTypes.Add(contentType);
+                    }
+                }
             }
         }
 
@@ -50,9 +64,15 @@ namespace NJsonApi
 
         public IJsonApiTransformer JsonApiTransformer => this.jsonApiTransformer;
 
-        public IReadOnlyList<string> SupportedContentTypes => this.supportedContentTypes;
+        public IReadOnlyList<string> SupportedContentTypes => this.supportedContentTypesList.Value;
 
         public bool SupportInputConversionFromJsonApi => this.inputMappers.Count > 0;
+
+        public Func<JsonSerializer> JsonSerializerFactory
+        {
+            get;
+            set;
+        }
 
         public bool IsTypeSupportedForJsonApiInput(Type type)
         {
@@ -112,18 +132,19 @@ namespace NJsonApi
 
         private JsonSerializer GetJsonSerializer()
         {
-            var serializerSettings = new JsonSerializerSettings();
-            serializerSettings.Converters.Add(new IsoDateTimeConverter());
-            serializerSettings.Converters.Add(new StringEnumConverter() { CamelCaseText = true });
+            JsonSerializer serializer = this.JsonSerializerFactory == null
+                                          ? JsonSerializer.Create()
+                                          : this.JsonSerializerFactory();
 #if DEBUG
-            serializerSettings.Formatting = Formatting.Indented;
+            serializer.Formatting = Formatting.Indented;
 #endif
-            var jsonSerializer = JsonSerializer.Create(serializerSettings);
-            jsonSerializer.Converters.Add(new RelationshipConverter());
-            jsonSerializer.Converters.Add(new ResourceConverter());
-            jsonSerializer.Converters.Add(new LinkConverter());
-            jsonSerializer.Converters.Add(new ResourceLinkageConverter());
-            return jsonSerializer;
+            serializer.Converters.Add(new IsoDateTimeConverter());
+            serializer.Converters.Add(new StringEnumConverter() { NamingStrategy = new CamelCaseNamingStrategy() });
+            serializer.Converters.Add(new RelationshipConverter());
+            serializer.Converters.Add(new ResourceConverter());
+            serializer.Converters.Add(new LinkConverter());
+            serializer.Converters.Add(new ResourceLinkageConverter());
+            return serializer;
         }
     }
 }

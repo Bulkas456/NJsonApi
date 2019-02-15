@@ -21,7 +21,7 @@ namespace NJsonApi
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             setupAction(configurationBuilder);
-            Configuration configuration = configurationBuilder.Build();
+            IConfiguration configuration = configurationBuilder.Build();
 
             mvcBuilder.AddMvcOptions(mvcOptions => 
             {

@@ -13,9 +13,9 @@ namespace NJsonApi.Formatter
 {
     public class JsonApiInputFormatter : TextInputFormatter
     {
-        private readonly Configuration configuration;
+        private readonly IConfiguration configuration;
 
-        public JsonApiInputFormatter(Configuration configuration)
+        public JsonApiInputFormatter(IConfiguration configuration)
         {
             this.configuration = configuration;
 

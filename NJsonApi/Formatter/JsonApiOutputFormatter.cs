@@ -13,9 +13,9 @@ namespace NJsonApi.Formatter
 {
     public class JsonApiOutputFormatter : TextOutputFormatter
     {
-        private readonly Configuration configuration;
+        private readonly IConfiguration configuration;
 
-        public JsonApiOutputFormatter(Configuration configuration)
+        public JsonApiOutputFormatter(IConfiguration configuration)
         {
             this.configuration = configuration;
 
