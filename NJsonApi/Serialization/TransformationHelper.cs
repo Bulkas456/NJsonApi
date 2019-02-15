@@ -13,7 +13,7 @@ using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.Serialization
 {
-    public class TransformationHelper
+    public static class TransformationHelper
     {
         public const int RecursionDepthLimit = 10;
         private const string IdPlaceholder = "{id}";
@@ -22,7 +22,7 @@ namespace NJsonApi.Serialization
         private const string MetaCountAttribute = "count";
         private const string SelfLinkKey = "self";
 
-        public CompoundDocument HandleException(Exception exception)
+        public static CompoundDocument HandleException(Exception exception)
         {
             var scfException = exception is NJsonApiBaseException
                 ? exception as NJsonApiBaseException
@@ -44,14 +44,14 @@ namespace NJsonApi.Serialization
             return compoundDocument;
         }
 
-        public IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
+        public static IResourceRepresentation ChooseProperResourceRepresentation(object resource, IEnumerable<SingleResource> representationList)
         {
             return resource is IEnumerable ?
                 (IResourceRepresentation)new ResourceCollection(representationList) :
                 representationList.Single();
         }
 
-        public List<SingleResource> CreateIncludedRepresentations(List<object> primaryResourceList, IResourceMapping resourceMapping, Context context)
+        public static List<SingleResource> CreateIncludedRepresentations(List<object> primaryResourceList, IResourceMapping resourceMapping, Context context)
         {
             var includedList = new List<SingleResource>();
             var alreadyVisitedObjects = new HashSet<object>(primaryResourceList);
@@ -62,7 +62,7 @@ namespace NJsonApi.Serialization
             return includedList;
         }
 
-        public void AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, List<SingleResource> includedList, HashSet<object> alreadyVisitedObjects, Context context)
+        public static void AppendIncludedRepresentationRecursive(object resource, IResourceMapping resourceMapping, List<SingleResource> includedList, HashSet<object> alreadyVisitedObjects, Context context)
         {
             resourceMapping.Relationships
                 .Where(rm => rm.InclusionRule != ResourceInclusionRules.ForceOmit)
@@ -82,7 +82,7 @@ namespace NJsonApi.Serialization
         }
 
 
-        public List<object> UnifyObjectsToList(object nestedObject)
+        public static List<object> UnifyObjectsToList(object nestedObject)
         {
             var list = new List<object>();
             if (nestedObject != null)
@@ -96,7 +96,7 @@ namespace NJsonApi.Serialization
             return list;
         }
 
-        public void VerifyTypeSupport(Type innerObjectType)
+        public static void VerifyTypeSupport(Type innerObjectType)
         {
             if (typeof(IMetaDataWrapper).IsAssignableFrom(innerObjectType))
             {
@@ -109,7 +109,7 @@ namespace NJsonApi.Serialization
             }
         }
 
-        public object UnwrapResourceObject(object objectGraph)
+        public static object UnwrapResourceObject(object objectGraph)
         {
             if (!(objectGraph is IMetaDataWrapper))
             {
@@ -119,7 +119,7 @@ namespace NJsonApi.Serialization
             return metadataWrapper.GetValue();
         }
 
-        public Dictionary<string, object> GetMetadata(object objectGraph)
+        public static Dictionary<string, object> GetMetadata(object objectGraph)
         {
             if (objectGraph is IMetaDataWrapper)
             {
@@ -129,7 +129,7 @@ namespace NJsonApi.Serialization
             return null;
         }
 
-        public Type GetObjectType(object objectGraph)
+        public static Type GetObjectType(object objectGraph)
         {
             Type objectType = objectGraph.GetType();
             if (objectGraph is IMetaDataWrapper)
@@ -145,7 +145,7 @@ namespace NJsonApi.Serialization
             return objectType;
         }
 
-        public SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context)
+        public static SingleResource CreateResourceRepresentation(object objectGraph, IResourceMapping resourceMapping, Context context)
         {
             var result = new SingleResource();
 
@@ -168,7 +168,7 @@ namespace NJsonApi.Serialization
             return new Dictionary<string, ILink>() { { SelfLinkKey, new SimpleLink { Href = context.GetFullyQualifiedUrl(resourceMapping.UrlTemplate.Replace(IdPlaceholder, result.Id)) } } };
         }
 
-        private ILink GetUrlFromTemplate(Context context, string urlTemplate, string parentId, string relatedId = null)
+        private static ILink GetUrlFromTemplate(Context context, string urlTemplate, string parentId, string relatedId = null)
         {
             return new SimpleLink
             {
@@ -176,7 +176,7 @@ namespace NJsonApi.Serialization
             };
         }
 
-        public Dictionary<string, IRelationship> CreateRelationships(object objectGraph, string parentId, IResourceMapping resourceMapping, Context context)
+        public static Dictionary<string, IRelationship> CreateRelationships(object objectGraph, string parentId, IResourceMapping resourceMapping, Context context)
         {
             var relationships = new Dictionary<string, IRelationship>();
             foreach (var linkMapping in resourceMapping.Relationships)
@@ -264,7 +264,7 @@ namespace NJsonApi.Serialization
             return relationships.Any() ? relationships : null;
         }
 
-        public void AssureAllMappingsRegistered(Type type, Configuration config)
+        public static void AssureAllMappingsRegistered(Type type, Configuration config)
         {
             if (!config.IsMappingRegistered(type))
             {
@@ -272,7 +272,7 @@ namespace NJsonApi.Serialization
             }
         }
 
-        public object GetCollection(JToken value, IRelationshipMapping mapping)
+        public static object GetCollection(JToken value, IRelationshipMapping mapping)
         {
             IList resultValue;
 
@@ -304,7 +304,7 @@ namespace NJsonApi.Serialization
             return resultValue;
         }
 
-        public object GetValue(JToken value, Type returnType)
+        public static object GetValue(JToken value, Type returnType)
         {
             object resultValue;
             try

@@ -18,14 +18,13 @@ namespace NJsonApi
         private readonly Dictionary<string, IResourceMapping> resourcesMappingsByResourceType = new Dictionary<string, IResourceMapping>();
         private readonly Dictionary<Type, IResourceMapping> resourcesMappingsByType = new Dictionary<Type, IResourceMapping>();
         private readonly Lazy<JsonSerializer> serializer;
-        private readonly Lazy<IJsonApiTransformer> jsonApiTransformer;
+        private readonly IJsonApiTransformer jsonApiTransformer = new JsonApiTransformer();
         private readonly Dictionary<Type, IJsonApiInputMapper> inputMappers = new Dictionary<Type, IJsonApiInputMapper>();
         private readonly List<Func<PreSerializationContext, Task>> preSerializationActions = new List<Func<PreSerializationContext, Task>>(); 
 
         public Configuration()
         {
             this.serializer = new Lazy<JsonSerializer>(GetJsonSerializer);
-            this.jsonApiTransformer = new Lazy<IJsonApiTransformer>(CreateJsonApiTransformer);
         }
 
         public void AddMapping(IResourceMapping resourceMapping)
@@ -49,7 +48,7 @@ namespace NJsonApi
 
         public JsonSerializer Serializer => this.serializer.Value;
 
-        public IJsonApiTransformer JsonApiTransformer => this.jsonApiTransformer.Value;
+        public IJsonApiTransformer JsonApiTransformer => this.jsonApiTransformer;
 
         public IReadOnlyList<string> SupportedContentTypes => this.supportedContentTypes;
 
@@ -125,11 +124,6 @@ namespace NJsonApi
             jsonSerializer.Converters.Add(new LinkConverter());
             jsonSerializer.Converters.Add(new ResourceLinkageConverter());
             return jsonSerializer;
-        }
-
-        private IJsonApiTransformer CreateJsonApiTransformer()
-        {
-            return new JsonApiTransformer(this.Serializer, new TransformationHelper());
         }
     }
 }

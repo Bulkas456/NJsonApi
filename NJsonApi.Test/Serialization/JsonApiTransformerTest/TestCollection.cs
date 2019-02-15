@@ -23,7 +23,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();            
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
@@ -40,7 +40,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform().Take(1);
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
@@ -58,7 +58,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
@@ -75,7 +75,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
@@ -100,7 +100,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
@@ -117,7 +117,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             // Arrange
             var configuration = CreateContext();
             IEnumerable<SampleClass> objectsToTransform = CreateObjectToTransform();
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             CompoundDocument result = sut.Transform(objectsToTransform, configuration);
@@ -137,7 +137,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
             {
                 new MetaDataWrapper<SampleClass>(new SampleClass())
             };
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act => Assert
             ThrowsAssert.Throws<NotSupportedException>(() => sut.Transform(objectsToTransform, configuration));

@@ -42,7 +42,6 @@ namespace NJsonApi
             mvcBuilder.Services.AddSingleton(configuration.Serializer);
             mvcBuilder.Services.AddSingleton<IJsonApiTransformer>(configuration.JsonApiTransformer);
             mvcBuilder.Services.AddSingleton(configuration);
-            mvcBuilder.Services.AddSingleton<TransformationHelper>();
             return mvcBuilder;
         }
 

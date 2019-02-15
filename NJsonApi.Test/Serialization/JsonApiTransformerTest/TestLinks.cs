@@ -15,12 +15,11 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
         private const string appUrl = @"http://localhost/";
 
         private JsonApiTransformer transformer;
-        private readonly TransformationHelper transformationHelper = new TransformationHelper();
 
         [TestInitialize]
         public void Initialize()
         {
-            transformer = new JsonApiTransformer(){TransformationHelper = transformationHelper};
+            transformer = new JsonApiTransformer();
         }
 
         [TestMethod]

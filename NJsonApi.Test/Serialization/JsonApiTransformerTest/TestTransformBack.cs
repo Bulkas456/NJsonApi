@@ -27,7 +27,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .WithSimpleProperty(x => x.Id)
                 .WithSimpleProperty(x => x.Title);
             var context = new Context { Configuration = configuration.ConfigurationBuilder.Build() };
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
@@ -59,7 +59,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .WithSimpleProperty(x => x.Id)
                 .WithSimpleProperty(x => x.Title);
             var context = new Context { Configuration = configuration.ConfigurationBuilder.Build() };
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
             // Act
             var resultDelta = sut.TransformBack(updateDocument, typeof(Post), context);
@@ -91,7 +91,7 @@ namespace NJsonApi.Test.Serialization.JsonApiTransformerTest
                 .WithSimpleProperty(x => x.AuthorId)
                 .WithSimpleProperty(x => x.Title);
             var context = new Context { Configuration = configuration.ConfigurationBuilder.Build() };
-            var sut = new JsonApiTransformer() { TransformationHelper = new TransformationHelper() };
+            var sut = new JsonApiTransformer();
 
 
             // Act
