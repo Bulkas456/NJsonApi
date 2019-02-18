@@ -53,14 +53,6 @@ namespace NJsonApi
             foreach (KeyValuePair<Type, IJsonApiInputMapper> pair in inputMappers)
             {
                 this.inputMappers[pair.Key] = pair.Value;
-
-                if (pair.Value.SupportedContentTypes != null)
-                {
-                    foreach (string contentType in pair.Value.SupportedContentTypes)
-                    {
-                        this.supportedInputContentTypes.Add(contentType);
-                    }
-                }
             }
         }
 
@@ -95,6 +87,14 @@ namespace NJsonApi
             foreach (string contentType in contentTypes)
             {
                 this.supportedOutputContentTypes.Add(contentType);
+            }
+        }
+
+        public void AddSupportedInputContentTypes(IEnumerable<string> contentTypes)
+        {
+            foreach (string contentType in contentTypes)
+            {
+                this.supportedInputContentTypes.Add(contentType);
             }
         }
 

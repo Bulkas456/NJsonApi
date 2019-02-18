@@ -8,7 +8,5 @@ namespace NJsonApi.Formatter.Input
     public interface IJsonApiInputMapper
     {
         object Map(CompoundDocument input);
-
-        IEnumerable<string> SupportedContentTypes { get; }
     }
 }

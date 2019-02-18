@@ -20,6 +20,7 @@ namespace NJsonApi
         private readonly List<Action<PreSerializationContext>> preSerializationActions = new List<Action<PreSerializationContext>>();
         private readonly List<Action<OverrideResponseHeadersContext>> overrideResponseHeadersActios = new List<Action<OverrideResponseHeadersContext>>();
         private readonly HashSet<string> supportedOutputTypes = new HashSet<string>();
+        private readonly HashSet<string> supportedInputTypes = new HashSet<string>();
         private Func<JsonSerializer> jsonSerialzierFactory;
         public ConfigurationBuilder()
         {
@@ -70,6 +71,16 @@ namespace NJsonApi
             return this;
         }
 
+        public ConfigurationBuilder WithSupportedInputContentTypes(params string[] contentTypes)
+        {
+            foreach (string contentType in contentTypes)
+            {
+                this.supportedInputTypes.Add(contentType);
+            }
+
+            return this;
+        }
+
         public T GetConvention<T>() where T : class, IConvention
         {
             var firstMatchingConvention = conventions
@@ -104,6 +115,7 @@ namespace NJsonApi
             configuration.AddPreSerializationAction(this.preSerializationActions);
             configuration.AddOverrideResponseHeadersAction(this.overrideResponseHeadersActios);
             configuration.AddSupportedOutputContentTypes(this.supportedOutputTypes);
+            configuration.AddSupportedInputContentTypes(this.supportedInputTypes);
             var propertyScanningConvention = GetConvention<IPropertyScanningConvention>();
 
             // Each link needs to be wired to full metadata once all resources are registered
