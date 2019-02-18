@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NJsonApi.Formatter.Input;
+using NJsonApi.Formatter.Output;
 using NJsonApi.Serialization;
 
 namespace NJsonApi
@@ -14,7 +15,8 @@ namespace NJsonApi
 
         IJsonApiTransformer JsonApiTransformer { get; }
 
-        IReadOnlyList<string> SupportedContentTypes { get; }
+        IReadOnlyList<string> SupportedInputContentTypes { get; }
+        IReadOnlyList<string> SupportedOutputContentTypes { get; }
 
         bool SupportInputConversionFromJsonApi { get; }
 
@@ -30,6 +32,8 @@ namespace NJsonApi
 
         bool SupportContentType(string mimeType);
 
-        Task BeforeSerialization(PreSerializationContext context);
+        void BeforeSerialization(PreSerializationContext context);
+
+        void OverrideResponseHeaders(OverrideResponseHeadersContext context);
     }
 }

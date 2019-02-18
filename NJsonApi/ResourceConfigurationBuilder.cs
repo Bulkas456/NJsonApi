@@ -80,6 +80,7 @@ namespace NJsonApi
         public ResourceConfigurationBuilder<TResource> WithOutputContentType(string contentType)
         {
             ConstructedMetadata.OutputContentType = contentType;
+            ConfigurationBuilder.WithSupportedOutputContentTypes(contentType);
             return this;
         }
 

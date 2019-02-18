@@ -10,27 +10,36 @@ using NJsonApi.Serialization.Converters;
 using System.Threading.Tasks;
 using NJsonApi.Formatter.Input;
 using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using NJsonApi.Formatter.Output;
 
 namespace NJsonApi
 {
     public class Configuration : IConfiguration
     {
-        private readonly HashSet<string> supportedContentTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private readonly HashSet<string> supportedInputContentTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "application/vnd.api+json"
+            Constants.JsonApiContentType
         };
+        private readonly Lazy<IReadOnlyList<string>> supportedInputContentTypesList;
         private readonly Dictionary<string, IResourceMapping> resourcesMappingsByResourceType = new Dictionary<string, IResourceMapping>();
         private readonly Dictionary<Type, IResourceMapping> resourcesMappingsByType = new Dictionary<Type, IResourceMapping>();
         private readonly Lazy<JsonSerializer> serializer;
         private readonly IJsonApiTransformer jsonApiTransformer = new JsonApiTransformer();
         private readonly Dictionary<Type, IJsonApiInputMapper> inputMappers = new Dictionary<Type, IJsonApiInputMapper>();
-        private readonly List<Func<PreSerializationContext, Task>> preSerializationActions = new List<Func<PreSerializationContext, Task>>();
-        private readonly Lazy<IReadOnlyList<string>> supportedContentTypesList;
+        private readonly List<Action<PreSerializationContext>> preSerializationActions = new List<Action<PreSerializationContext>>();
+        private readonly List<Action<OverrideResponseHeadersContext>> overrideResponseHeadersActions = new List<Action<OverrideResponseHeadersContext>>();
+        private readonly HashSet<string> supportedOutputContentTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            Constants.JsonApiContentType
+        };
+        private readonly Lazy<IReadOnlyList<string>> supportedOutputContentTypesList;
 
         public Configuration()
         {
             this.serializer = new Lazy<JsonSerializer>(GetJsonSerializer);
-            this.supportedContentTypesList = new Lazy<IReadOnlyList<string>>(() => this.supportedContentTypes.ToList());
+            this.supportedInputContentTypesList = new Lazy<IReadOnlyList<string>>(() => this.supportedInputContentTypes.ToList());
+            this.supportedOutputContentTypesList = new Lazy<IReadOnlyList<string>>(() => this.supportedOutputContentTypes.ToList());
         }
 
         public void AddMapping(IResourceMapping resourceMapping)
@@ -49,22 +58,29 @@ namespace NJsonApi
                 {
                     foreach (string contentType in pair.Value.SupportedContentTypes)
                     {
-                        this.supportedContentTypes.Add(contentType);
+                        this.supportedInputContentTypes.Add(contentType);
                     }
                 }
             }
         }
 
-        public void AddPreSerializationAction(IEnumerable<Func<PreSerializationContext, Task>> actions)
+        public void AddPreSerializationAction(IEnumerable<Action<PreSerializationContext>> actions)
         {
             this.preSerializationActions.AddRange(actions);
+        }
+
+        public void AddOverrideResponseHeadersAction(IEnumerable<Action<OverrideResponseHeadersContext>> actions)
+        {
+            this.overrideResponseHeadersActions.AddRange(actions);
         }
 
         public JsonSerializer Serializer => this.serializer.Value;
 
         public IJsonApiTransformer JsonApiTransformer => this.jsonApiTransformer;
 
-        public IReadOnlyList<string> SupportedContentTypes => this.supportedContentTypesList.Value;
+        public IReadOnlyList<string> SupportedInputContentTypes => this.supportedInputContentTypesList.Value;
+
+        public IReadOnlyList<string> SupportedOutputContentTypes => this.supportedOutputContentTypesList.Value;
 
         public bool SupportInputConversionFromJsonApi => this.inputMappers.Count > 0;
 
@@ -74,9 +90,18 @@ namespace NJsonApi
             set;
         }
 
+        public void AddSupportedOutputContentTypes(IEnumerable<string> contentTypes)
+        {
+            foreach (string contentType in contentTypes)
+            {
+                this.supportedOutputContentTypes.Add(contentType);
+            }
+        }
+
         public bool IsTypeSupportedForJsonApiInput(Type type)
         {
-            if (typeof(IEnumerable).IsAssignableFrom(type) && type.IsGenericType)
+            if (typeof(IEnumerable).IsAssignableFrom(type) 
+                && type.IsGenericType)
             {
                 return this.inputMappers.ContainsKey(type.GetGenericArguments()[0]);
             }
@@ -119,14 +144,22 @@ namespace NJsonApi
 
         public bool SupportContentType(string mimeType)
         {
-            return this.supportedContentTypes.Any(contentType => string.Equals(mimeType, contentType, StringComparison.OrdinalIgnoreCase));
+            return this.supportedInputContentTypes.Any(contentType => string.Equals(mimeType, contentType, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task BeforeSerialization(PreSerializationContext context)
+        public void BeforeSerialization(PreSerializationContext context)
         {
-            foreach (Func<PreSerializationContext, Task> action in this.preSerializationActions)
+            foreach (Action<PreSerializationContext> action in this.preSerializationActions)
             {
-                await action(context);
+                action(context);
+            }
+        }
+
+        public void OverrideResponseHeaders(OverrideResponseHeadersContext context)
+        {
+            foreach (Action<OverrideResponseHeadersContext> action in this.overrideResponseHeadersActions)
+            {
+                action(context);
             }
         }
 

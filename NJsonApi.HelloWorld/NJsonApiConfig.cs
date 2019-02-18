@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using NJsonApi.Formatter.Input;
 using NJsonApi.HelloWorld.Models;
 using NJsonApi.Serialization.Documents;
+using NJsonApi.Serialization.Representations.Resources;
 
 namespace NJsonApi.HelloWorld
 {
@@ -12,7 +14,15 @@ namespace NJsonApi.HelloWorld
     {
         public static void Configure(ConfigurationBuilder configurationBuilder)
         {
-            configurationBuilder.WithJsonApiInputFor<World>(new WorldInputMapper());
+            configurationBuilder.WithJsonApiInputFor<World>(new WorldInputMapper())
+                .WithPreOutputSerializationAction(context => 
+                {
+                })
+                .WithOverrideResponseHeadersAction(context => 
+                {
+                    context.HttpContext.Response.ContentType = "from action";
+                })
+                .WithSupportedOutputContentTypes("contentType1", "contentType2");
 
             configurationBuilder
                 .Resource<World>()
@@ -27,15 +37,17 @@ namespace NJsonApi.HelloWorld
         }
     }
 
-    internal class WorldInputMapper : Formatter.Input.IJsonApiInputMapper
+    internal class WorldInputMapper : IJsonApiInputMapper
     {
+        public IEnumerable<string> SupportedContentTypes => new string[] { "supported input content type" };
+
         public object Map(CompoundDocument input)
         {
-            var a = input.Data as Serialization.Representations.Resources.SingleResource;
+            SingleResource data = (SingleResource)input.Data;
             return new World()
             {
-                Id = int.Parse(a.Id, System.Globalization.NumberStyles.Integer, CultureInfo.InvariantCulture),
-                Name = (string)a.Attributes["name"],
+                Id = int.Parse(data.Id, NumberStyles.Integer, CultureInfo.InvariantCulture),
+                Name = (string)data.Attributes["name"],
                 //Continents = a.Relationships["continents"]
             };
         }

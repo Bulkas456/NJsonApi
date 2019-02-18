@@ -9,7 +9,7 @@ using NJsonApi.Common.Infrastructure;
 using NJsonApi.Serialization;
 using NJsonApi.Serialization.Documents;
 
-namespace NJsonApi.Formatter
+namespace NJsonApi.Formatter.Input
 {
     public class JsonApiInputFormatter : TextInputFormatter
     {
@@ -19,7 +19,7 @@ namespace NJsonApi.Formatter
         {
             this.configuration = configuration;
 
-            foreach (string contentType in this.configuration.SupportedContentTypes)
+            foreach (string contentType in this.configuration.SupportedInputContentTypes)
             {
                 this.SupportedMediaTypes.Add(contentType);
             }
@@ -35,7 +35,7 @@ namespace NJsonApi.Formatter
 
         public override IReadOnlyList<string> GetSupportedContentTypes(string contentType, Type objectType)
         {
-            return this.configuration.SupportedContentTypes;
+            return this.configuration.SupportedInputContentTypes;
         }
 
         public override Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)

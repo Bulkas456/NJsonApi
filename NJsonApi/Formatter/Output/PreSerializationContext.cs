@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NJsonApi.Serialization.Documents;
 
-namespace NJsonApi
+namespace NJsonApi.Formatter.Output
 {
     public class PreSerializationContext
     {

@@ -2,20 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Newtonsoft.Json;
 using NJsonApi.Conventions;
 using NJsonApi.Conventions.Impl;
 using NJsonApi.Formatter.Input;
+using NJsonApi.Formatter.Output;
 
 namespace NJsonApi
 {
     public class ConfigurationBuilder
     {
         public readonly Dictionary<Type, IResourceConfigurationBuilder> ResourceConfigurationsByType = new Dictionary<Type, IResourceConfigurationBuilder>();
-
         private readonly Stack<IConvention> conventions = new Stack<IConvention>();
         private readonly Dictionary<Type, IJsonApiInputMapper> inputMappers = new Dictionary<Type, IJsonApiInputMapper>();
-        private readonly List<Func<PreSerializationContext, Task>> preSerializationActions = new List<Func<PreSerializationContext, Task>>();
+        private readonly List<Action<PreSerializationContext>> preSerializationActions = new List<Action<PreSerializationContext>>();
+        private readonly List<Action<OverrideResponseHeadersContext>> overrideResponseHeadersActios = new List<Action<OverrideResponseHeadersContext>>();
+        private readonly HashSet<string> supportedOutputTypes = new HashSet<string>();
         private Func<JsonSerializer> jsonSerialzierFactory;
         public ConfigurationBuilder()
         {
@@ -38,15 +42,31 @@ namespace NJsonApi
             return this;
         }
 
-        public ConfigurationBuilder WithPreSerializationAction(Func<PreSerializationContext, Task> action)
+        public ConfigurationBuilder WithPreOutputSerializationAction(Action<PreSerializationContext> action)
         {
             this.preSerializationActions.Add(action);
+            return this;
+        }
+
+        public ConfigurationBuilder WithOverrideResponseHeadersAction(Action<OverrideResponseHeadersContext> action)
+        {
+            this.overrideResponseHeadersActios.Add(action);
             return this;
         }
 
         public ConfigurationBuilder WithJsonSerializerFactory(Func<JsonSerializer> factory)
         {
             this.jsonSerialzierFactory = factory;
+            return this;
+        }
+
+        public ConfigurationBuilder WithSupportedOutputContentTypes(params string[] contentTypes)
+        {
+            foreach (string contentType in contentTypes)
+            {
+                this.supportedOutputTypes.Add(contentType);
+            }
+
             return this;
         }
 
@@ -82,6 +102,8 @@ namespace NJsonApi
             };
             configuration.AddInputMapper(this.inputMappers);
             configuration.AddPreSerializationAction(this.preSerializationActions);
+            configuration.AddOverrideResponseHeadersAction(this.overrideResponseHeadersActios);
+            configuration.AddSupportedOutputContentTypes(this.supportedOutputTypes);
             var propertyScanningConvention = GetConvention<IPropertyScanningConvention>();
 
             // Each link needs to be wired to full metadata once all resources are registered

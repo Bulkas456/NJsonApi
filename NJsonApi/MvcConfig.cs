@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 using NJsonApi.Formatter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Internal;
+using NJsonApi.Formatter.Output;
+using NJsonApi.Formatter.Input;
 
 namespace NJsonApi
 {
@@ -30,13 +32,13 @@ namespace NJsonApi
                 //mvcOptions.Filters.Add(typeof(JsonApiActionFilter));
                 mvcOptions.Filters.Add(typeof(JsonApiExceptionFilter));
                 mvcOptions.OutputFormatters.Insert(0, new JsonApiOutputFormatter(configuration));
-                //mvcOptions.InputFormatters.OfType<JsonInputFormatter>().First().SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/vnd.api+json"));
-                // mvcOptions.InputFormatters.Insert(0, new JsonApiFormatter(configuration));
 
                 if (configuration.SupportInputConversionFromJsonApi)
                 {
                     mvcOptions.InputFormatters.Insert(0, new JsonApiInputFormatter(configuration));
                 }
+
+                mvcOptions.InputFormatters.OfType<JsonInputFormatter>().First().SupportedMediaTypes.Add(new MediaTypeHeaderValue(Constants.JsonApiContentType));
             });
 
             mvcBuilder.Services.AddSingleton(configuration.Serializer);
