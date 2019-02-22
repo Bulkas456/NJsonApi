@@ -46,10 +46,5 @@ namespace NJsonApi
             mvcBuilder.Services.AddSingleton(configuration);
             return mvcBuilder;
         }
-
-        public static IApplicationBuilder UseBufferedRequestBody(this IApplicationBuilder applicationBuilder)
-        {
-            return applicationBuilder.Use(next => context => { context.Request.EnableRewind(); return next(context); });
-        }
     }
 }

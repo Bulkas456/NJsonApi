@@ -48,7 +48,7 @@ namespace NJsonApi.Formatter.Output
                 Value = context.Object
             });
 
-            using (StreamWriter streamWriter = new StreamWriter(context.HttpContext.Response.Body, selectedEncoding))
+            using (StreamWriter streamWriter = new StreamWriter(context.HttpContext.Response.Body, selectedEncoding, 1024, true))
             {
                 using (JsonTextWriter jsonWriter = new JsonTextWriter(streamWriter))
                 {

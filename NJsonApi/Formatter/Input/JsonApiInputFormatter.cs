@@ -40,7 +40,7 @@ namespace NJsonApi.Formatter.Input
 
         public override Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
         {
-            CompoundDocument document = this.configuration.Serializer.RequestBodyTo<CompoundDocument>(context.HttpContext);
+            CompoundDocument document = this.configuration.Serializer.RequestBodyTo<CompoundDocument>(context.HttpContext, encoding);
             object convertedObject = this.configuration.GetInputMapper(context.ModelType).Map(document);
             return InputFormatterResult.SuccessAsync(convertedObject);
         }

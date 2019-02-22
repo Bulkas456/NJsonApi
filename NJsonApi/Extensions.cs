@@ -21,9 +21,9 @@ namespace NJsonApi
             };
         }
 
-        public static TResult RequestBodyTo<TResult>(this JsonSerializer serializer, HttpContext httpContext)
+        public static TResult RequestBodyTo<TResult>(this JsonSerializer serializer, HttpContext httpContext, Encoding encoding)
         {
-            using (StreamReader reader = new StreamReader(httpContext.Request.Body))
+            using (StreamReader reader = new StreamReader(httpContext.Request.Body, encoding, true, 1024, true))
             {
                 using (JsonTextReader jsonReader = new JsonTextReader(reader))
                 {
