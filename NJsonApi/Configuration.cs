@@ -121,8 +121,9 @@ namespace NJsonApi
 
         public bool IsTypeSupportedForJsonApiOutput(Type type)
         {
-            return this.IsMappingRegistered(type)
-                   || type.IsAssignableFrom(typeof(CompoundDocument));
+            return type != null
+                   && (this.IsMappingRegistered(type)
+                       || type.IsAssignableFrom(typeof(CompoundDocument)));
         }
 
         public bool IsMappingRegistered(Type type)
