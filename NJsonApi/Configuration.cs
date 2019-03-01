@@ -76,6 +76,7 @@ namespace NJsonApi
 
         public bool SupportInputConversionFromJsonApi => this.inputMappers.Count > 0;
 
+        public bool CreateResponseInJsonApiForUnhandedExceptions { get; set; } = true;
         public Func<JsonSerializer> JsonSerializerFactory
         {
             get;

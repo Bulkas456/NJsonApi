@@ -22,6 +22,8 @@ namespace NJsonApi
         private readonly HashSet<string> supportedOutputTypes = new HashSet<string>();
         private readonly HashSet<string> supportedInputTypes = new HashSet<string>();
         private Func<JsonSerializer> jsonSerialzierFactory;
+        private bool createResponseInJsonApiForUnhandedExceptions = true;
+
         public ConfigurationBuilder()
         {
             //add the default conventions
@@ -81,6 +83,12 @@ namespace NJsonApi
             return this;
         }
 
+        public ConfigurationBuilder WithNoUnhandledExceptionsRepsonseCreation()
+        {
+            this.createResponseInJsonApiForUnhandedExceptions = false;
+            return this;
+        }
+
         public T GetConvention<T>() where T : class, IConvention
         {
             var firstMatchingConvention = conventions
@@ -109,7 +117,8 @@ namespace NJsonApi
         {
             Configuration configuration = new Configuration()
             {
-                JsonSerializerFactory = this.jsonSerialzierFactory
+                JsonSerializerFactory = this.jsonSerialzierFactory,
+                CreateResponseInJsonApiForUnhandedExceptions = this.createResponseInJsonApiForUnhandedExceptions
             };
             configuration.AddInputMapper(this.inputMappers);
             configuration.AddPreSerializationAction(this.preSerializationActions);

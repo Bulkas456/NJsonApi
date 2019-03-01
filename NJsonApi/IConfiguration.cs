@@ -35,5 +35,7 @@ namespace NJsonApi
         void BeforeSerialization(PreSerializationContext context);
 
         void OverrideResponseHeaders(OverrideResponseHeadersContext context);
+
+        bool CreateResponseInJsonApiForUnhandedExceptions { get; }
     }
 }

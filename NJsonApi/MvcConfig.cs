@@ -27,10 +27,11 @@ namespace NJsonApi
 
             mvcBuilder.AddMvcOptions(mvcOptions => 
             {
-                //mvcOptions.Conventions.Add(new ApiExplorerVisibilityEnabledConvention());
-                //mvcOptions.Filters.Add(typeof(JsonApiResourceFilter));
-                //mvcOptions.Filters.Add(typeof(JsonApiActionFilter));
-                mvcOptions.Filters.Add(typeof(JsonApiExceptionFilter));
+                if (configuration.CreateResponseInJsonApiForUnhandedExceptions)
+                {
+                    mvcOptions.Filters.Add(typeof(JsonApiExceptionFilter));
+                }
+
                 mvcOptions.OutputFormatters.Insert(0, new JsonApiOutputFormatter(configuration));
 
                 if (configuration.SupportInputConversionFromJsonApi)
